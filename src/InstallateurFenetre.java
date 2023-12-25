@@ -25,7 +25,7 @@ public class InstallateurFenetre extends JFrame {
     private JTextField cheminTextField;
     private JLabel imageLabel;
     private JButton installerButton;
-    private String launcherVersion = "5";
+    private String launcherVersion = "6";
     boolean erreurProduite = false;
 
     // La méthode pour modifier le fichier .txt
