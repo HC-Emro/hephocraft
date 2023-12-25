@@ -1,3 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-commons-io-2.15.1/docs/* linguist-generated=true
+* linguist-vendored
+src/* linguist-vendored=false
