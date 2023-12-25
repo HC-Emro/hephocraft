@@ -212,7 +212,7 @@ public class InstallateurFenetre extends JFrame {
             connection.disconnect();
         } catch (Exception e) {
             final String errorMessage = e.getMessage(); // Récupère le message d'erreur de l'exception
-            final String customMessage = "Erreur lors de la connexion à l'API";
+            final String customMessage = "Erreur lors de la connexion à l'API\n" + errorMessage;
 
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
