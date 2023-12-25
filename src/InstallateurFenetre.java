@@ -1,8 +1,10 @@
 import javax.swing.*;
-import java.awt.*;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.awt.Image;
+import java.io.IOException;
 import java.io.File;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -13,6 +15,7 @@ import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
@@ -24,6 +27,48 @@ public class InstallateurFenetre extends JFrame {
     private JButton installerButton;
     private String launcherVersion = "5";
     boolean erreurProduite = false;
+
+    // La méthode pour modifier le fichier .txt
+    private void modifierLigneDansFichier(String cheminFichier, String ancienneValeur, String nouvelleValeur) {
+        try {
+            Path fichier = Paths.get(cheminFichier);
+
+            // Lecture de toutes les lignes du fichier dans une liste
+            List<String> lignes = Files.readAllLines(fichier, StandardCharsets.UTF_8);
+
+            // Indique si l'ancienne valeur a été trouvée
+            boolean ancienneValeurTrouvee = false;
+
+            // Parcourir la liste et trouver la ligne à modifier
+            for (int i = 0; i < lignes.size(); i++) {
+                String ligne = lignes.get(i);
+                if (ligne.contains(ancienneValeur)) {
+
+                    // Modifier la ligne si l'ancienne valeur est trouvée
+                    lignes.set(i, nouvelleValeur);
+
+                    ancienneValeurTrouvee = true;
+                    break;  // Arrêter la recherche après avoir trouvé la première occurrence
+                }
+            }
+
+
+            // Si l'ancienne valeur n'est pas trouvée, ajouter une nouvelle ligne
+            if (!ancienneValeurTrouvee) {
+                lignes.add(nouvelleValeur);
+                System.out.println("Nouvelle ligne ajoutée : " + nouvelleValeur);
+            }
+
+            // Écriture des lignes modifiées dans le fichier
+            Files.write(fichier, lignes, StandardCharsets.UTF_8);
+
+            System.out.println("Le fichier a été modifié avec succès.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public InstallateurFenetre() {
         super("Installateur HephoCraft");
 
@@ -100,6 +145,17 @@ public class InstallateurFenetre extends JFrame {
                                 String modsDirectory = selectedDirectory + File.separator + "mods";
                                 supprimerDossier(modsDirectory);
 
+                                // Ajoute la logique pour modifier le fichier .txt ici
+                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "forceUnicodeFont:", "forceUnicodeFont:false");
+                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "lang:", "lang:fr_fr");
+                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "tutorialStep:", "tutorialStep:none");
+                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "skipMultiplayerWarning:", "skipMultiplayerWarning:true");
+                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "joinedFirstServer:", "joinedFirstServer:true");
+                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "onboardAccessibility:", "onboardAccessibility:false");
+                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "soundCategory_music:", "soundCategory_music:0.0");
+                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "key_gui.xaero_open_map:", "key_gui.xaero_open_map:key.keyboard.semicolon");
+
+
                                 String resourcesUrl = getResourcesUrlFromApi();
 
                                 if (resourcesUrl != null) {
@@ -140,7 +196,6 @@ public class InstallateurFenetre extends JFrame {
 
         afficherImageFromApi();
     }
-
     private void choisirDossier() {
         JFileChooser fileChooser = new JFileChooser();
 
