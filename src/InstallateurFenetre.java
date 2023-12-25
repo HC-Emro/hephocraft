@@ -22,7 +22,7 @@ public class InstallateurFenetre extends JFrame {
     private JTextField cheminTextField;
     private JLabel imageLabel;
     private JButton installerButton;
-    private String launcherVersion = "4";
+    private String launcherVersion = "5";
     boolean erreurProduite = false;
     public InstallateurFenetre() {
         super("Installateur HephoCraft");
