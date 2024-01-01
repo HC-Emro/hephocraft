@@ -11,11 +11,15 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.file.*;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.imageio.ImageIO;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
@@ -26,11 +30,13 @@ public class InstallateurFenetre extends JFrame {
     private JLabel imageLabel;
     private JButton installerButton;
     private String launcherVersion = "6";
+    private String versionFabric = "fabric-loader-0.15.3-1.20.2";
     boolean erreurProduite = false;
 
     // La méthode pour modifier le fichier .txt
     private void modifierLigneDansFichier(String cheminFichier, String ancienneValeur, String nouvelleValeur) {
         try {
+            cheminFichier = cheminFichier + File.separator + "options.txt";
             Path fichier = Paths.get(cheminFichier);
 
             // Lecture de toutes les lignes du fichier dans une liste
@@ -67,7 +73,59 @@ public class InstallateurFenetre extends JFrame {
             e.printStackTrace();
         }
     }
+    private String getCurrentDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        Date currentDate = new Date();
+        return dateFormat.format(currentDate);
+    }
+    // Modifier le launcher_profiles.json pour insérer le profil HC
+    private void modifierLauncherProfiles(String cheminfichier) {
+        cheminfichier = cheminfichier + File.separator + "launcher_profiles.json";
 
+        try {
+            // Étape 1 : Lire le fichier JSON existant et le convertir en un objet JsonObject
+            String jsonString = new String(Files.readAllBytes(Paths.get(cheminfichier)));
+            JSONObject launcherProfiles = new JSONObject(jsonString);
+
+            // Extraire l'objet JSON "profiles"
+            if (launcherProfiles.has("profiles")) {
+                JSONObject profiles = launcherProfiles.getJSONObject("profiles");
+
+                // Créez une copie de la liste des clés (noms de profils)
+                List<String> profileKeys = new ArrayList<>();
+                Iterator<String> keysIterator = profiles.keys();
+                while (keysIterator.hasNext()) {
+                    String key = keysIterator.next();
+                    profileKeys.add(key);
+                }
+
+                // Parcourez la liste des clés et supprimez les profils "HephoCraft" existants
+                for (String key : profileKeys) {
+                    if (key.contains("HephoCraft")) {
+                        profiles.remove(key);
+                    }
+                }
+
+                // Créez un nouvel objet JSON pour le profil HephoCraft
+                JSONObject hephoCraftProfile = new JSONObject();
+                hephoCraftProfile.put("created", getCurrentDateTime());
+                hephoCraftProfile.put("lastUsed", getCurrentDateTime());
+                hephoCraftProfile.put("lastVersionId", versionFabric);
+                hephoCraftProfile.put("name", "HephoCraft");
+                hephoCraftProfile.put("type", "custom");
+
+                // Ajoutez le profil HephoCraft à la section "profiles"
+                profiles.put("HephoCraft", hephoCraftProfile);
+            }
+
+            // Étape 3 : Écrire le fichier JSON mis à jour
+            Files.write(Paths.get(cheminfichier), launcherProfiles.toString(4).getBytes());
+            System.out.println("Contenu du fichier launcher_profiles.json modifié avec succès.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public InstallateurFenetre() {
         super("Installateur HephoCraft");
@@ -146,21 +204,21 @@ public class InstallateurFenetre extends JFrame {
                                 supprimerDossier(modsDirectory);
 
                                 // Ajoute la logique pour modifier le fichier .txt ici
-                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "forceUnicodeFont:", "forceUnicodeFont:false");
-                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "lang:", "lang:fr_fr");
-                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "tutorialStep:", "tutorialStep:none");
-                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "skipMultiplayerWarning:", "skipMultiplayerWarning:true");
-                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "joinedFirstServer:", "joinedFirstServer:true");
-                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "onboardAccessibility:", "onboardAccessibility:false");
-                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "soundCategory_music:", "soundCategory_music:0.0");
-                                modifierLigneDansFichier(selectedDirectory + File.separator + "options.txt", "key_gui.xaero_open_map:", "key_gui.xaero_open_map:key.keyboard.semicolon");
-
+                                modifierLigneDansFichier(selectedDirectory, "forceUnicodeFont:", "forceUnicodeFont:false");
+                                modifierLigneDansFichier(selectedDirectory, "lang:", "lang:fr_fr");
+                                modifierLigneDansFichier(selectedDirectory, "tutorialStep:", "tutorialStep:none");
+                                modifierLigneDansFichier(selectedDirectory, "skipMultiplayerWarning:", "skipMultiplayerWarning:true");
+                                modifierLigneDansFichier(selectedDirectory, "joinedFirstServer:", "joinedFirstServer:true");
+                                modifierLigneDansFichier(selectedDirectory, "onboardAccessibility:", "onboardAccessibility:false");
+                                modifierLigneDansFichier(selectedDirectory, "soundCategory_music:", "soundCategory_music:0.0");
+                                modifierLigneDansFichier(selectedDirectory, "key_gui.xaero_open_map:", "key_gui.xaero_open_map:key.keyboard.semicolon");
 
                                 String resourcesUrl = getResourcesUrlFromApi();
 
                                 if (resourcesUrl != null) {
                                     telechargerEtExtraireZIP(resourcesUrl, selectedDirectory);
                                     if (erreurProduite == false) {
+                                        modifierLauncherProfiles(selectedDirectory);
                                         JOptionPane.showMessageDialog(InstallateurFenetre.this,
                                                 "Installation terminée avec succès ! Vous pouvez lancer le jeu avec le profil créé.\nLe nom du profil contient 'HephoCraft' ou 'fabric loader'.", "Installation", JOptionPane.INFORMATION_MESSAGE);
                                     }
