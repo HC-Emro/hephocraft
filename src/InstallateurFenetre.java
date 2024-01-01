@@ -137,7 +137,7 @@ public class InstallateurFenetre extends JFrame {
                                         installerButton.setEnabled(true); // Réactiver le bouton
                                         erreurProduite = true;
                                         JOptionPane.showMessageDialog(InstallateurFenetre.this,
-                                                "Veuillez lancer au moins une fois votre jeu avec la version : " + mcVersion,
+                                                "Veuillez lancer au moins une fois votre jeu en Vanilla " + mcVersion,
                                                 "Erreur", JOptionPane.ERROR_MESSAGE);
                                     }
                                 });
