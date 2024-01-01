@@ -29,7 +29,7 @@ public class InstallateurFenetre extends JFrame {
     private JTextField cheminTextField;
     private JLabel imageLabel;
     private JButton installerButton;
-    private String launcherVersion = "6";
+    private String launcherVersion = "7";
     private String versionFabric = "fabric-loader-0.15.3-1.20.2";
     boolean erreurProduite = false;
 
