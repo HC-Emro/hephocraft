@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page HTML avec données JSON</title>
+</head>
+<body>
+    <h1>Informations JSON</h1>
+    <p id="launcher">Launcher : Loading...</p>
+    <p id="version">Version MC : Loading...</p>
+    <p id="resources_url">Resources URL : <a href="#" target="_blank">Loading...</a></p>
+    <img src="#" id="image_url" alt="Image de l'API" width="300" height="150">
+
+    <script>
+        // Données JSON
+        const jsonData = {
+            "Launcher": "7",
+            "Version MC": "1.20.2",
+            "resources_url": "https://www.dl.dropboxusercontent.com/scl/fi/ne17ph4ugepzgjlo6ig1q/installeur.zip?rlkey=qezfsx707sqzmv1nuxgnzqemy&dl=0",
+            "image_url": "https://static.wixstatic.com/media/f005e1_43103c1a00a24cc59ba0628fdc07f962~mv2.jpg/v1/fill/w_600,h_300,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/installeur.jpg"
+        };
+
+        // Afficher les données dans la page
+        document.getElementById('launcher').textContent = `Launcher: ${jsonData.Launcher}`;
+        document.getElementById('version').textContent = `Version MC: ${jsonData['Version MC']}`;
+        document.getElementById('resources_url').innerHTML = `Resources URL : <a href="${jsonData.resources_url}" target="_blank">${jsonData.resources_url}</a>`;
+        document.getElementById('image_url').src = jsonData.image_url;
+    </script>
+</body>
+</html>
