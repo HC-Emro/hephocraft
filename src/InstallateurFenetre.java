@@ -279,7 +279,7 @@ public class InstallateurFenetre extends JFrame {
 
     private boolean verifierVersionLauncher() {
         try {
-            URI uri = new URI("https://www.team-hc.com/_functions/version");
+            URI uri = new URI("https://team-hc.com/_functions/version");
             URL url = uri.toURL();
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -366,7 +366,7 @@ public class InstallateurFenetre extends JFrame {
 
     private String getMcVersionFromApi() {
         try {
-            URI uri = new URI("https://www.team-hc.com/_functions/version");
+            URI uri = new URI("https://team-hc.com/_functions/version");
             URL url = uri.toURL();
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -407,7 +407,7 @@ public class InstallateurFenetre extends JFrame {
 
     private String getResourcesUrlFromApi() {
         try {
-            URI uri = new URI("https://www.team-hc.com/_functions/version");
+            URI uri = new URI("https://team-hc.com/_functions/version");
             URL url = uri.toURL();
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -448,7 +448,7 @@ public class InstallateurFenetre extends JFrame {
 
     private String getImageUrlFromApi() {
         try {
-            URI uri = new URI("https://www.team-hc.com/_functions/version");
+            URI uri = new URI("https://team-hc.com/_functions/version");
             URL url = uri.toURL();
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
